@@ -80,8 +80,36 @@ class QuestionDataManager: ObservableObject {
     }
 }
 
+class TimerManager: ObservableObject {
+    @Published var secondsElapsed = 0.0
+    var timer: Timer?
+    private var pauseTime: Date?
+
+    func startTimer() {
+        if let pauseTime = pauseTime {
+            secondsElapsed += Date().timeIntervalSince(pauseTime)
+        }
+        timer?.invalidate()
+        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+            self?.secondsElapsed += 1
+        }
+        self.pauseTime = nil
+    }
+    
+    func stopTimer() {
+        timer?.invalidate()
+        pauseTime = Date()
+    }
+    
+    func resetTimer() {
+        stopTimer()
+        secondsElapsed = 0
+    }
+}
+
 struct ContentView: View {
     @StateObject private var dataManager = QuestionDataManager()
+    @StateObject private var timerManager = TimerManager()
     @State private var showingBalloon = false
     @State private var balloonOffset = CGSize.zero
     @State private var showingCross = false
@@ -96,55 +124,77 @@ struct ContentView: View {
     @State private var showFlash = false
     @State private var popIncorrect = false
     @State private var isPaused = false
-    @State private var isSessionActive = false
-    @State private var isSessionPaused = false
+    @State private var sessionInPlay = false
+    @State private var sessionStats = false
+
+    @State private var sessionCorrectAnswers = 0
+    @State private var sessionWrongAnswers = 0
+    @State private var sessionQuestionCount = 0
 
     let backC = UIColor(named: "Background") ?? UIColor.systemBackground
 
     var body: some View {
+        TabView {
+            mainView
+                .tabItem {
+                    Label("Main", systemImage: "house")
+                }
+                .tag(0)
+
+            StruggleView(questions: dataManager.askedQuestions + dataManager.unaskedQuestions)
+                .tabItem {
+                    Label("Struggle", systemImage: "flame")
+                }
+                .tag(1)
+
+            AllTimeStatisticsView(dataManager: dataManager)
+                .tabItem {
+                    Label("Statistics", systemImage: "chart.bar")
+                }
+                .tag(2)
+        }
+    }
+
+    var mainView: some View {
         ZStack {
-            TabView {
-                mainView
-                    .tabItem {
-                        Label("Main", systemImage: "house")
+            Color(backC)
+                .foregroundColor(.white)
+                .ignoresSafeArea()
+
+            VStack {
+                HStack {
+                    Text(formatTime(timerManager.secondsElapsed))
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .fontDesign(.serif)
+
+                    ScoreView(points: $points, pointsColor: $pointsColor)
+                        .frame(maxWidth: .infinity, alignment: .center)
+
+                    Button("Pause") {
+                        isPaused.toggle()
+                        timerManager.stopTimer()
                     }
-                    .tag(0)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                }
 
-                StruggleView(questions: dataManager.askedQuestions + dataManager.unaskedQuestions)
-                    .tabItem {
-                        Label("Struggle", systemImage: "flame")
-                    }
-                    .tag(1)
-
-                AllTimeStatisticsView(dataManager: dataManager)
-                    .tabItem {
-                        Label("Statistics", systemImage: "chart.bar")
-                    }
-                    .tag(2)
-            }
-            .blur(radius: isSessionActive ? (isSessionPaused ? 5 : 0) : 5)
-            .disabled(!isSessionActive || isSessionPaused)
-
-            if !isSessionActive {
-                Color(backC)
-                    .foregroundColor(.white)
-                    .ignoresSafeArea()
-
-                VStack {
+                Spacer()
+                if let currentQuestion = currentQuestion {
+                    QuestionView(question: currentQuestion.question)
                     Spacer()
-                    Button("Start Session") {
-                        startSession()
-                    }
-                    .font(.title)
-                    .padding()
+                    OptionsGrid(options: options, correctAnswer: currentQuestion.correctAnswer, handleAnswer: handleAnswer, showFlash: $showFlash, popIncorrect: $popIncorrect)
+                    StatisticsView(correctCount: currentQuestion.correctCount, wrongCount: currentQuestion.wrongCount, answerTimes: currentQuestion.answerTimes)
                     Spacer()
+                } else {
+                    Text("Loading...")
                 }
             }
+            .disabled(isPaused || !sessionInPlay)
+            .blur(radius: isPaused || !sessionInPlay ? 5 : 0)
 
-            if isSessionPaused {
+            if isPaused {
                 Color.black.opacity(0.4)
                     .edgesIgnoringSafeArea(.all)
-
+                
                 VStack {
                     Text("Paused")
                         .font(.largeTitle)
@@ -153,7 +203,8 @@ struct ContentView: View {
                         .padding()
 
                     Button(action: {
-                        isSessionPaused = false
+                        isPaused.toggle()
+                        timerManager.startTimer()
                     }) {
                         Text("Resume")
                             .font(.title)
@@ -161,12 +212,58 @@ struct ContentView: View {
                             .background(Color.white)
                             .cornerRadius(10)
                     }
-                    .padding()
-
+                    
                     Button(action: {
-                        endSession()
+                        isPaused.toggle()
+                        sessionStats.toggle()
+                        timerManager.stopTimer()
                     }) {
                         Text("End Session")
+                            .font(.title)
+                            .padding()
+                            .background(Color.white)
+                            .cornerRadius(10)
+                    }
+                }
+            }
+            
+            if !sessionInPlay {
+                Color.black.opacity(0.4)
+                    .edgesIgnoringSafeArea(.all)
+                
+                VStack {
+                    Button(action: {
+                        sessionInPlay.toggle()
+                        reset()
+                        timerManager.startTimer()
+                    }) {
+                        Text("Start Session")
+                            .font(.title)
+                            .padding()
+                            .background(Color.white)
+                            .cornerRadius(10)
+                    }
+                }
+            }
+            
+            if sessionStats {
+                Color.black.opacity(0.4)
+                    .edgesIgnoringSafeArea(.all)
+                
+                VStack {
+                    SessionStatisticsView(dataManager: dataManager, timerManager: timerManager, sessionQuestionCount: sessionQuestionCount, sessionCorrectAnswers: sessionCorrectAnswers, sessionWrongAnswers: sessionWrongAnswers)
+                    
+                    Button(action: {
+                        sessionStats.toggle()
+                        sessionInPlay.toggle()
+                        timerManager.resetTimer()
+                        dataManager.loadQuestions()
+                        points = 0
+                        sessionCorrectAnswers = 0
+                        sessionWrongAnswers = 0
+                        sessionQuestionCount = 0
+                    }) {
+                        Text("Continue")
                             .font(.title)
                             .padding()
                             .background(Color.white)
@@ -195,51 +292,9 @@ struct ContentView: View {
                     }
             }
         }
-    }
-
-    var mainView: some View {
-        ZStack {
-            Color(backC)
-                .foregroundColor(.white)
-                .ignoresSafeArea()
-
-            VStack {
-                HStack {
-                    Text("00:00")
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        .fontDesign(.serif)
-
-                    ScoreView(points: $points, pointsColor: $pointsColor)
-                        .frame(maxWidth: .infinity, alignment: .center)
-
-                    Button("Pause") {
-                        isSessionPaused = true
-                    }
-                    .frame(maxWidth: .infinity, alignment: .center)
-                }
-
-                Spacer()
-                if let currentQuestion = currentQuestion {
-                    QuestionView(question: currentQuestion.question)
-                    Spacer()
-                    OptionsGrid(options: options, correctAnswer: currentQuestion.correctAnswer, handleAnswer: handleAnswer, showFlash: $showFlash, popIncorrect: $popIncorrect)
-                    StatisticsView(correctCount: currentQuestion.correctCount, wrongCount: currentQuestion.wrongCount, answerTimes: currentQuestion.answerTimes)
-                    Spacer()
-                } else {
-                    Text("Loading...")
-                }
-            }
+        .onAppear {
+            reset()
         }
-    }
-
-    func startSession() {
-        isSessionActive = true
-        reset()
-    }
-
-    func endSession() {
-        isSessionActive = false
-        reset()
     }
 
     func reset() {
@@ -296,6 +351,7 @@ struct ContentView: View {
             question.correct += 1
             question.correctCount += 1
             points += 1
+            sessionCorrectAnswers += 1
             showingBalloon = true
             balloonOffset = CGSize.zero
             withAnimation {
@@ -308,6 +364,7 @@ struct ContentView: View {
             }
         } else {
             question.wrongCount += 1
+            sessionWrongAnswers += 1
             showingCross = true
             crossOffset = CGSize.zero
             withAnimation {
@@ -319,6 +376,7 @@ struct ContentView: View {
                 }
             }
         }
+        sessionQuestionCount += 1
     }
 
     func flashCorrectAnswer() {
@@ -370,6 +428,12 @@ struct ContentView: View {
             showingCross = false
         }
     }
+
+    private func formatTime(_ seconds: Double) -> String {
+        let minutes = Int(seconds) / 60
+        let seconds = Int(seconds) % 60
+        return String(format: "%02d:%02d", minutes, seconds)
+    }
 }
 
 struct OptionsGrid: View {
@@ -381,7 +445,6 @@ struct OptionsGrid: View {
     
     let buttonC = UIColor(named: "Buttons")
     let textC: UIColor? = UIColor(named: "Text")
-
 
     var body: some View {
         LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 1), count: 3), alignment: .center, spacing: 20) {
@@ -413,11 +476,10 @@ struct OptionsGrid: View {
             if let buttonColor = buttonC {
                 return Color(buttonColor)
             } else {
-                return Color.clear // Provide a default color in case `buttonC` is nil
+                return Color.clear
             }
         }
     }
-
 
     private func popScale(for option: String) -> CGFloat {
         if popIncorrect && option != "\(correctAnswer)" {
@@ -470,7 +532,6 @@ struct StatisticsView: View {
     
     var body: some View {
         VStack {
-            
             HStack {
                 Text("Correct: \(correctCount)")
                 Text("Wrong: \(wrongCount)")
@@ -484,8 +545,38 @@ struct StatisticsView: View {
                 .font(.title3)
                 .padding()
                 .fontDesign(.serif)
-            
         }
+    }
+}
+
+struct SessionStatisticsView: View {
+    @ObservedObject var dataManager: QuestionDataManager
+    @ObservedObject var timerManager: TimerManager
+
+    let sessionQuestionCount: Int
+    let sessionCorrectAnswers: Int
+    let sessionWrongAnswers: Int
+    
+    var body: some View {
+        VStack {
+            Text("Session Statistics")
+                .font(.largeTitle)
+                .padding()
+            
+            let totalTime = timerManager.secondsElapsed
+            let averageTime = sessionQuestionCount > 0 ? totalTime / Double(sessionQuestionCount) : 0.0
+            
+            Text("Questions Answered: \(sessionQuestionCount)")
+            Text("Correct Answers: \(sessionCorrectAnswers)")
+            Text("Wrong Answers: \(sessionWrongAnswers)")
+            Text("Average Time: \(String(format: "%.2f", averageTime)) seconds")
+            Text("Total Time: \(String(format: "%.0f", totalTime)) seconds")
+        }
+        .font(.title2)
+        .padding()
+        .background(Color.white)
+        .cornerRadius(10)
+        .shadow(radius: 10)
     }
 }
 

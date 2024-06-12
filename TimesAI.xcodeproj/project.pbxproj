@@ -60,9 +60,7 @@
 			isa = PBXGroup;
 			children = (
 				8F50270A2C179E4F00832ADA /* TimesAIApp.swift */,
-				8F50270C2C179E4F00832ADA /* ContentView.swift */,
-				8F50271C2C179E9400832ADA /* StruggleView.swift */,
-				8F50271E2C179EA600832ADA /* StatisticsView.swift */,
+				8F5027222C1A487200832ADA /* Views */,
 				8F5027202C179EB700832ADA /* Launch Screen.storyboard */,
 				8F50270E2C179E4F00832ADA /* Item.swift */,
 				8F5027102C179E5100832ADA /* Assets.xcassets */,
@@ -77,6 +75,16 @@
 				8F5027132C179E5100832ADA /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		8F5027222C1A487200832ADA /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				8F50270C2C179E4F00832ADA /* ContentView.swift */,
+				8F50271C2C179E9400832ADA /* StruggleView.swift */,
+				8F50271E2C179EA600832ADA /* StatisticsView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -303,7 +311,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = ompatel.TimesAIApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -335,7 +343,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = ompatel.TimesAIApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
