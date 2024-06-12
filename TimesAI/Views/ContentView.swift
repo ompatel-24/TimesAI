@@ -96,6 +96,8 @@ struct ContentView: View {
     @State private var showFlash = false
     @State private var popIncorrect = false
     @State private var isPaused = false
+    @State private var isSessionActive = false
+    @State private var isSessionPaused = false
 
     let backC = UIColor(named: "Background") ?? UIColor.systemBackground
 
@@ -106,25 +108,43 @@ struct ContentView: View {
                     .tabItem {
                         Label("Main", systemImage: "house")
                     }
+                    .tag(0)
 
                 StruggleView(questions: dataManager.askedQuestions + dataManager.unaskedQuestions)
                     .tabItem {
                         Label("Struggle", systemImage: "flame")
                     }
+                    .tag(1)
 
                 AllTimeStatisticsView(dataManager: dataManager)
                     .tabItem {
                         Label("Statistics", systemImage: "chart.bar")
                     }
+                    .tag(2)
             }
-            .blur(radius: isPaused ? 5 : 0)
-//            .disabled(isPaused)
-            
+            .blur(radius: isSessionActive ? (isSessionPaused ? 5 : 0) : 5)
+            .disabled(!isSessionActive || isSessionPaused)
 
-            if isPaused {
+            if !isSessionActive {
+                Color(backC)
+                    .foregroundColor(.white)
+                    .ignoresSafeArea()
+
+                VStack {
+                    Spacer()
+                    Button("Start Session") {
+                        startSession()
+                    }
+                    .font(.title)
+                    .padding()
+                    Spacer()
+                }
+            }
+
+            if isSessionPaused {
                 Color.black.opacity(0.4)
                     .edgesIgnoringSafeArea(.all)
-                
+
                 VStack {
                     Text("Paused")
                         .font(.largeTitle)
@@ -133,7 +153,7 @@ struct ContentView: View {
                         .padding()
 
                     Button(action: {
-                        isPaused.toggle()
+                        isSessionPaused = false
                     }) {
                         Text("Resume")
                             .font(.title)
@@ -141,41 +161,17 @@ struct ContentView: View {
                             .background(Color.white)
                             .cornerRadius(10)
                     }
-                }
-            }
-        }
-    }
+                    .padding()
 
-    var mainView: some View {
-        ZStack {
-            Color(backC)
-                .foregroundColor(.white)
-                .ignoresSafeArea()
-
-            VStack {
-                HStack {
-                    Text("00:00")
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        .fontDesign(.serif)
-
-                    ScoreView(points: $points, pointsColor: $pointsColor)
-                        .frame(maxWidth: .infinity, alignment: .center)
-
-                    Button("Pause") {
-                        isPaused.toggle()
+                    Button(action: {
+                        endSession()
+                    }) {
+                        Text("End Session")
+                            .font(.title)
+                            .padding()
+                            .background(Color.white)
+                            .cornerRadius(10)
                     }
-                    .frame(maxWidth: .infinity, alignment: .center)
-                }
-
-                Spacer()
-                if let currentQuestion = currentQuestion {
-                    QuestionView(question: currentQuestion.question)
-                    Spacer()
-                    OptionsGrid(options: options, correctAnswer: currentQuestion.correctAnswer, handleAnswer: handleAnswer, showFlash: $showFlash, popIncorrect: $popIncorrect)
-                    StatisticsView(correctCount: currentQuestion.correctCount, wrongCount: currentQuestion.wrongCount, answerTimes: currentQuestion.answerTimes)
-                    Spacer()
-                } else {
-                    Text("Loading...")
                 }
             }
 
@@ -199,9 +195,51 @@ struct ContentView: View {
                     }
             }
         }
-        .onAppear {
-            reset()
+    }
+
+    var mainView: some View {
+        ZStack {
+            Color(backC)
+                .foregroundColor(.white)
+                .ignoresSafeArea()
+
+            VStack {
+                HStack {
+                    Text("00:00")
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .fontDesign(.serif)
+
+                    ScoreView(points: $points, pointsColor: $pointsColor)
+                        .frame(maxWidth: .infinity, alignment: .center)
+
+                    Button("Pause") {
+                        isSessionPaused = true
+                    }
+                    .frame(maxWidth: .infinity, alignment: .center)
+                }
+
+                Spacer()
+                if let currentQuestion = currentQuestion {
+                    QuestionView(question: currentQuestion.question)
+                    Spacer()
+                    OptionsGrid(options: options, correctAnswer: currentQuestion.correctAnswer, handleAnswer: handleAnswer, showFlash: $showFlash, popIncorrect: $popIncorrect)
+                    StatisticsView(correctCount: currentQuestion.correctCount, wrongCount: currentQuestion.wrongCount, answerTimes: currentQuestion.answerTimes)
+                    Spacer()
+                } else {
+                    Text("Loading...")
+                }
+            }
         }
+    }
+
+    func startSession() {
+        isSessionActive = true
+        reset()
+    }
+
+    func endSession() {
+        isSessionActive = false
+        reset()
     }
 
     func reset() {
@@ -285,8 +323,8 @@ struct ContentView: View {
 
     func flashCorrectAnswer() {
         let flashCount = 3
-        let flashDuration: Double = 0.5
-        
+        let flashDuration = 0.2
+
         for i in 0..<flashCount {
             DispatchQueue.main.asyncAfter(deadline: .now() + (flashDuration * 2 * Double(i))) {
                 withAnimation {
@@ -505,4 +543,3 @@ extension Color {
 #Preview {
     ContentView()
 }
-
