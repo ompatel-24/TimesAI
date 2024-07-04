@@ -1,8 +1,7 @@
-
 import SwiftUI
 
 struct AllTimeStatisticsView: View {
-    @ObservedObject var dataManager: QuestionDataManager
+    @EnvironmentObject var dataManager: QuestionDataManager
     
     let backC = UIColor(named: "Color") ?? UIColor.systemBackground
 
@@ -102,4 +101,6 @@ struct DifficultQuestionRow: View {
 
 #Preview {
     ContentView()
+        .environmentObject(QuestionDataManager())
+        .environmentObject(StarsDataManager())
 }

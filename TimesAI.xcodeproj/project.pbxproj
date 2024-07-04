@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8F2EDD6F2C1E0E41000F4470 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F2EDD6E2C1E0E41000F4470 /* SettingsView.swift */; };
+		8F2EDD712C1F5145000F4470 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8F2EDD702C1F5145000F4470 /* Launch Screen.storyboard */; };
 		8F50270B2C179E4F00832ADA /* TimesAIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F50270A2C179E4F00832ADA /* TimesAIApp.swift */; };
 		8F50270D2C179E4F00832ADA /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F50270C2C179E4F00832ADA /* ContentView.swift */; };
 		8F50270F2C179E4F00832ADA /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F50270E2C179E4F00832ADA /* Item.swift */; };
@@ -14,10 +16,11 @@
 		8F5027142C179E5100832ADA /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8F5027132C179E5100832ADA /* Preview Assets.xcassets */; };
 		8F50271D2C179E9400832ADA /* StruggleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F50271C2C179E9400832ADA /* StruggleView.swift */; };
 		8F50271F2C179EA600832ADA /* StatisticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F50271E2C179EA600832ADA /* StatisticsView.swift */; };
-		8F5027212C179EB700832ADA /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8F5027202C179EB700832ADA /* Launch Screen.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8F2EDD6E2C1E0E41000F4470 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		8F2EDD702C1F5145000F4470 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		8F5027072C179E4F00832ADA /* TimesAI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TimesAI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8F50270A2C179E4F00832ADA /* TimesAIApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimesAIApp.swift; sourceTree = "<group>"; };
 		8F50270C2C179E4F00832ADA /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -26,7 +29,6 @@
 		8F5027132C179E5100832ADA /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		8F50271C2C179E9400832ADA /* StruggleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StruggleView.swift; sourceTree = "<group>"; };
 		8F50271E2C179EA600832ADA /* StatisticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsView.swift; sourceTree = "<group>"; };
-		8F5027202C179EB700832ADA /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -59,10 +61,10 @@
 		8F5027092C179E4F00832ADA /* TimesAI */ = {
 			isa = PBXGroup;
 			children = (
-				8F50270A2C179E4F00832ADA /* TimesAIApp.swift */,
 				8F5027222C1A487200832ADA /* Views */,
-				8F5027202C179EB700832ADA /* Launch Screen.storyboard */,
+				8F50270A2C179E4F00832ADA /* TimesAIApp.swift */,
 				8F50270E2C179E4F00832ADA /* Item.swift */,
+				8F2EDD702C1F5145000F4470 /* Launch Screen.storyboard */,
 				8F5027102C179E5100832ADA /* Assets.xcassets */,
 				8F5027122C179E5100832ADA /* Preview Content */,
 			);
@@ -81,6 +83,7 @@
 			isa = PBXGroup;
 			children = (
 				8F50270C2C179E4F00832ADA /* ContentView.swift */,
+				8F2EDD6E2C1E0E41000F4470 /* SettingsView.swift */,
 				8F50271C2C179E9400832ADA /* StruggleView.swift */,
 				8F50271E2C179EA600832ADA /* StatisticsView.swift */,
 			);
@@ -145,7 +148,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8F5027212C179EB700832ADA /* Launch Screen.storyboard in Resources */,
+				8F2EDD712C1F5145000F4470 /* Launch Screen.storyboard in Resources */,
 				8F5027142C179E5100832ADA /* Preview Assets.xcassets in Resources */,
 				8F5027112C179E5100832ADA /* Assets.xcassets in Resources */,
 			);
@@ -161,6 +164,7 @@
 				8F50270D2C179E4F00832ADA /* ContentView.swift in Sources */,
 				8F50271F2C179EA600832ADA /* StatisticsView.swift in Sources */,
 				8F50271D2C179E9400832ADA /* StruggleView.swift in Sources */,
+				8F2EDD6F2C1E0E41000F4470 /* SettingsView.swift in Sources */,
 				8F50270F2C179E4F00832ADA /* Item.swift in Sources */,
 				8F50270B2C179E4F00832ADA /* TimesAIApp.swift in Sources */,
 			);
@@ -304,6 +308,7 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen.storyboard";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
@@ -311,9 +316,12 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.21;
 				PRODUCT_BUNDLE_IDENTIFIER = ompatel.TimesAIApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -336,6 +344,7 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = "Launch Screen.storyboard";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
@@ -343,9 +352,12 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.21;
 				PRODUCT_BUNDLE_IDENTIFIER = ompatel.TimesAIApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

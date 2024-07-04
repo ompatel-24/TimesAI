@@ -25,6 +25,13 @@ struct Question: Identifiable, Codable {
     enum CodingKeys: String, CodingKey {
         case id, question, attempts, correct, correctAnswer, correctCount, wrongCount, answerTimes
     }
+
+    var isStruggleQuestion: Bool {
+        guard attempts > 0 else { return false }
+        let correctRate = Double(correct) / Double(attempts)
+        let averageTime = answerTimes.isEmpty ? 0 : answerTimes.reduce(0, +) / Double(answerTimes.count)
+        return correctRate < 0.5 || averageTime > 10
+    }
 }
 
 class QuestionDataManager: ObservableObject {
@@ -80,36 +87,21 @@ class QuestionDataManager: ObservableObject {
     }
 }
 
-class TimerManager: ObservableObject {
-    @Published var secondsElapsed = 0.0
-    var timer: Timer?
-    private var pauseTime: Date?
+class StarsDataManager: ObservableObject {
+    @Published var sessionCorrectAnswers: Int {
+        didSet {
+            UserDefaults.standard.set(sessionCorrectAnswers, forKey: "sessionCorrectAnswers")
+        }
+    }
 
-    func startTimer() {
-        if let pauseTime = pauseTime {
-            secondsElapsed += Date().timeIntervalSince(pauseTime)
-        }
-        timer?.invalidate()
-        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
-            self?.secondsElapsed += 1
-        }
-        self.pauseTime = nil
-    }
-    
-    func stopTimer() {
-        timer?.invalidate()
-        pauseTime = Date()
-    }
-    
-    func resetTimer() {
-        stopTimer()
-        secondsElapsed = 0
+    init() {
+        self.sessionCorrectAnswers = UserDefaults.standard.integer(forKey: "sessionCorrectAnswers")
     }
 }
 
 struct ContentView: View {
-    @StateObject private var dataManager = QuestionDataManager()
-    @StateObject private var timerManager = TimerManager()
+    @EnvironmentObject var dataManager: QuestionDataManager
+    @EnvironmentObject var starsDataManager: StarsDataManager
     @State private var showingBalloon = false
     @State private var balloonOffset = CGSize.zero
     @State private var showingCross = false
@@ -127,9 +119,9 @@ struct ContentView: View {
     @State private var sessionInPlay = false
     @State private var sessionStats = false
 
-    @State private var sessionCorrectAnswers = 0
     @State private var sessionWrongAnswers = 0
     @State private var sessionQuestionCount = 0
+    @State private var secondChance = false
 
     let backC = UIColor(named: "Background") ?? UIColor.systemBackground
 
@@ -147,11 +139,16 @@ struct ContentView: View {
                 }
                 .tag(1)
 
-            AllTimeStatisticsView(dataManager: dataManager)
+            AllTimeStatisticsView()
                 .tabItem {
                     Label("Statistics", systemImage: "chart.bar")
                 }
                 .tag(2)
+//            SettingsView()
+//                .tabItem {
+//                    Label("Settings", systemImage: "gear")
+//                }
+//                .tag(3)
         }
     }
 
@@ -163,18 +160,17 @@ struct ContentView: View {
 
             VStack {
                 HStack {
-                    Text(formatTime(timerManager.secondsElapsed))
+                    StarsView(sessionCorrectAnswers: starsDataManager.sessionCorrectAnswers)
                         .frame(maxWidth: .infinity, alignment: .center)
-                        .fontDesign(.serif)
-
-                    ScoreView(points: $points, pointsColor: $pointsColor)
-                        .frame(maxWidth: .infinity, alignment: .center)
-
+                    
                     Button("Pause") {
                         isPaused.toggle()
-                        timerManager.stopTimer()
                     }
                     .frame(maxWidth: .infinity, alignment: .center)
+                    .padding()
+                    .fontDesign(.serif)
+                    .background(Color.white)
+                    .cornerRadius(10)
                 }
 
                 Spacer()
@@ -204,7 +200,7 @@ struct ContentView: View {
 
                     Button(action: {
                         isPaused.toggle()
-                        timerManager.startTimer()
+                        reset()
                     }) {
                         Text("Resume")
                             .font(.title)
@@ -216,7 +212,6 @@ struct ContentView: View {
                     Button(action: {
                         isPaused.toggle()
                         sessionStats.toggle()
-                        timerManager.stopTimer()
                     }) {
                         Text("End Session")
                             .font(.title)
@@ -235,7 +230,6 @@ struct ContentView: View {
                     Button(action: {
                         sessionInPlay.toggle()
                         reset()
-                        timerManager.startTimer()
                     }) {
                         Text("Start Session")
                             .font(.title)
@@ -251,15 +245,14 @@ struct ContentView: View {
                     .edgesIgnoringSafeArea(.all)
                 
                 VStack {
-                    SessionStatisticsView(dataManager: dataManager, timerManager: timerManager, sessionQuestionCount: sessionQuestionCount, sessionCorrectAnswers: sessionCorrectAnswers, sessionWrongAnswers: sessionWrongAnswers)
+                    SessionStatisticsView(sessionQuestionCount: sessionQuestionCount, sessionCorrectAnswers: starsDataManager.sessionCorrectAnswers, sessionWrongAnswers: sessionWrongAnswers)
                     
                     Button(action: {
                         sessionStats.toggle()
                         sessionInPlay.toggle()
-                        timerManager.resetTimer()
                         dataManager.loadQuestions()
                         points = 0
-                        sessionCorrectAnswers = 0
+                        starsDataManager.sessionCorrectAnswers = 0
                         sessionWrongAnswers = 0
                         sessionQuestionCount = 0
                     }) {
@@ -322,6 +315,7 @@ struct ContentView: View {
         }
 
         questionStartTime = Date()
+        secondChance = false
     }
 
     func handleAnswer(_ selectedOption: String) {
@@ -337,21 +331,25 @@ struct ContentView: View {
         if "\(currentQuestion.correctAnswer)" == selectedOption {
             updateResult(isCorrect: true, question: &currentQuestion)
             popIncorrectOptions()
+        } else if !secondChance {
+            secondChance = true
+            showFlash = true
+            removeOneIncorrectOption()
         } else {
             updateResult(isCorrect: false, question: &currentQuestion)
-            showFlash = true
-            flashCorrectAnswer()
+            // flashCorrectAnswer()
         }
         dataManager.updateQuestion(currentQuestion)
         self.currentQuestion = currentQuestion
     }
 
     func updateResult(isCorrect: Bool, question: inout Question) {
+        print("Updating result: \(isCorrect ? "Correct" : "Wrong") for question: \(question.question)")
         if isCorrect {
             question.correct += 1
             question.correctCount += 1
             points += 1
-            sessionCorrectAnswers += 1
+            starsDataManager.sessionCorrectAnswers += 1
             showingBalloon = true
             balloonOffset = CGSize.zero
             withAnimation {
@@ -374,31 +372,11 @@ struct ContentView: View {
                 withAnimation {
                     pointsColor = defaultPointsColor
                 }
+                reset()
             }
         }
         sessionQuestionCount += 1
-    }
-
-    func flashCorrectAnswer() {
-        let flashCount = 3
-        let flashDuration = 0.2
-
-        for i in 0..<flashCount {
-            DispatchQueue.main.asyncAfter(deadline: .now() + (flashDuration * 2 * Double(i))) {
-                withAnimation {
-                    showFlash = true
-                }
-            }
-            DispatchQueue.main.asyncAfter(deadline: .now() + (flashDuration * 2 * Double(i) + flashDuration)) {
-                withAnimation {
-                    showFlash = false
-                }
-            }
-        }
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + (flashDuration * 2 * Double(flashCount))) {
-            reset()
-        }
+        print("Session stats: \(sessionQuestionCount), Points: \(points), Correct: \(starsDataManager.sessionCorrectAnswers), Wrong: \(sessionWrongAnswers)")
     }
 
     func popIncorrectOptions() {
@@ -408,6 +386,13 @@ struct ContentView: View {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             popIncorrect = false
             reset()
+        }
+    }
+
+    func removeOneIncorrectOption() {
+        guard let currentQuestion = currentQuestion else { return }
+        if let incorrectOptionIndex = options.firstIndex(where: { $0 != "\(currentQuestion.correctAnswer)" }) {
+            options.remove(at: incorrectOptionIndex)
         }
     }
 
@@ -436,6 +421,42 @@ struct ContentView: View {
     }
 }
 
+struct StarView: View {
+    var isFilled: Bool
+    var hasBow: Bool
+    
+    var body: some View {
+        ZStack {
+            Image(systemName: "star.fill")
+                .foregroundColor(isFilled ? .yellow : .gray)
+                .font(.title)
+            
+            if hasBow {
+                Image(systemName: "laurel.leading")
+                    .foregroundColor(.red)
+                    .font(.caption)
+                    .offset(x: 10, y: -10)
+            }
+        }
+    }
+}
+
+struct StarsView: View {
+    var sessionCorrectAnswers: Int
+    
+    var body: some View {
+        HStack {
+            ForEach(0..<5) { index in
+                StarView(
+                    isFilled: index < sessionCorrectAnswers / 20,
+                    hasBow: (sessionCorrectAnswers / 120) > index
+                )
+            }
+        }
+        .padding()
+    }
+}
+
 struct OptionsGrid: View {
     var options: [String]
     var correctAnswer: Int
@@ -455,7 +476,7 @@ struct OptionsGrid: View {
                     Text(option)
                         .padding()
                         .frame(width: 120, height: 120)
-                        .background(flashColor(for: option))
+                        .background(.accent)
                         .foregroundColor(Color(textC ?? .label))
                         .font(.title)
                         .fontWeight(.bold)
@@ -465,18 +486,6 @@ struct OptionsGrid: View {
                         .opacity(popOpacity(for: option))
                 }
                 .padding(.vertical, 10)
-            }
-        }
-    }
-
-    private func flashColor(for option: String) -> Color {
-        if showFlash && option == "\(correctAnswer)" {
-            return Color.green.opacity(showFlash ? 0.5 : 1.0)
-        } else {
-            if let buttonColor = buttonC {
-                return Color(buttonColor)
-            } else {
-                return Color.clear
             }
         }
     }
@@ -550,9 +559,6 @@ struct StatisticsView: View {
 }
 
 struct SessionStatisticsView: View {
-    @ObservedObject var dataManager: QuestionDataManager
-    @ObservedObject var timerManager: TimerManager
-
     let sessionQuestionCount: Int
     let sessionCorrectAnswers: Int
     let sessionWrongAnswers: Int
@@ -563,14 +569,9 @@ struct SessionStatisticsView: View {
                 .font(.largeTitle)
                 .padding()
             
-            let totalTime = timerManager.secondsElapsed
-            let averageTime = sessionQuestionCount > 0 ? totalTime / Double(sessionQuestionCount) : 0.0
-            
             Text("Questions Answered: \(sessionQuestionCount)")
             Text("Correct Answers: \(sessionCorrectAnswers)")
             Text("Wrong Answers: \(sessionWrongAnswers)")
-            Text("Average Time: \(String(format: "%.2f", averageTime)) seconds")
-            Text("Total Time: \(String(format: "%.0f", totalTime)) seconds")
         }
         .font(.title2)
         .padding()
@@ -633,4 +634,6 @@ extension Color {
 
 #Preview {
     ContentView()
+        .environmentObject(QuestionDataManager())
+        .environmentObject(StarsDataManager())
 }
