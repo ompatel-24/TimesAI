@@ -169,7 +169,7 @@ struct ContentView: View {
                     .frame(maxWidth: .infinity, alignment: .center)
                     .padding()
                     .fontDesign(.serif)
-                    .background(Color.white)
+                    .background(Color.buttons)
                     .cornerRadius(10)
                 }
 
@@ -180,8 +180,6 @@ struct ContentView: View {
                     OptionsGrid(options: options, correctAnswer: currentQuestion.correctAnswer, handleAnswer: handleAnswer, showFlash: $showFlash, popIncorrect: $popIncorrect)
                     StatisticsView(correctCount: currentQuestion.correctCount, wrongCount: currentQuestion.wrongCount, answerTimes: currentQuestion.answerTimes)
                     Spacer()
-                } else {
-                    Text("Loading...")
                 }
             }
             .disabled(isPaused || !sessionInPlay)
@@ -205,7 +203,7 @@ struct ContentView: View {
                         Text("Resume")
                             .font(.title)
                             .padding()
-                            .background(Color.white)
+                            .background(Color.buttons)
                             .cornerRadius(10)
                     }
                     
@@ -216,7 +214,7 @@ struct ContentView: View {
                         Text("End Session")
                             .font(.title)
                             .padding()
-                            .background(Color.white)
+                            .background(Color.buttons)
                             .cornerRadius(10)
                     }
                 }
@@ -234,7 +232,7 @@ struct ContentView: View {
                         Text("Start Session")
                             .font(.title)
                             .padding()
-                            .background(Color.white)
+                            .background(Color.buttons)
                             .cornerRadius(10)
                     }
                 }
@@ -259,7 +257,7 @@ struct ContentView: View {
                         Text("Continue")
                             .font(.title)
                             .padding()
-                            .background(Color.white)
+                            .background(Color.buttons)
                             .cornerRadius(10)
                     }
                 }
@@ -476,7 +474,7 @@ struct OptionsGrid: View {
                     Text(option)
                         .padding()
                         .frame(width: 120, height: 120)
-                        .background(.accent)
+                        .background(.buttons)
                         .foregroundColor(Color(textC ?? .label))
                         .font(.title)
                         .fontWeight(.bold)
@@ -529,7 +527,7 @@ struct QuestionView: View {
             .font(.largeTitle)
             .fontDesign(.serif)
             .fontWeight(.bold)
-            .foregroundColor(Color(UIColor.label))
+            .foregroundColor(Color(.accent))
             .padding()
     }
 }
@@ -575,7 +573,7 @@ struct SessionStatisticsView: View {
         }
         .font(.title2)
         .padding()
-        .background(Color.white)
+        .background(Color.buttons)
         .cornerRadius(10)
         .shadow(radius: 10)
     }

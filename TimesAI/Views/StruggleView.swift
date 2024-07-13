@@ -21,6 +21,11 @@ class StruggleQuestionDataManager: ObservableObject {
     func filterStruggleQuestions() {
         struggleQuestions = allQuestions.filter { $0.isStruggleQuestion }
     }
+
+    func refreshData(with questions: [Question]) {
+        self.allQuestions = questions
+        filterStruggleQuestions()
+    }
 }
 
 struct StruggleView: View {
@@ -43,10 +48,10 @@ struct StruggleView: View {
     @State private var isPaused = false
     @State private var sessionInPlay = false
     @State private var sessionStats = false
-
     @State private var sessionWrongAnswers = 0
     @State private var sessionQuestionCount = 0
     @State private var secondChance = false
+    @State private var showAlert = false
 
     init(questions: [Question]) {
         _struggleDataManager = StateObject(wrappedValue: StruggleQuestionDataManager(questions: questions))
@@ -54,7 +59,7 @@ struct StruggleView: View {
 
     var body: some View {
         ZStack {
-            Color(UIColor.systemBackground)
+            Color(UIColor.background)
                 .ignoresSafeArea()
 
             VStack {
@@ -68,7 +73,7 @@ struct StruggleView: View {
                     .frame(maxWidth: .infinity, alignment: .center)
                     .padding()
                     .fontDesign(.serif)
-                    .background(Color.white)
+                    .background(Color.buttons)
                     .cornerRadius(10)
                 }
 
@@ -79,8 +84,6 @@ struct StruggleView: View {
                     OptionsGrid(options: options, correctAnswer: currentQuestion.correctAnswer, handleAnswer: handleAnswer, showFlash: $showFlash, popIncorrect: $popIncorrect)
                     StatisticsView(correctCount: currentQuestion.correctCount, wrongCount: currentQuestion.wrongCount, answerTimes: currentQuestion.answerTimes)
                     Spacer()
-                } else {
-                    Text("Loading...")
                 }
             }
             .disabled(isPaused || !sessionInPlay)
@@ -104,7 +107,7 @@ struct StruggleView: View {
                         Text("Resume")
                             .font(.title)
                             .padding()
-                            .background(Color.white)
+                            .background(Color.buttons)
                             .cornerRadius(10)
                     }
 
@@ -115,7 +118,7 @@ struct StruggleView: View {
                         Text("End Session")
                             .font(.title)
                             .padding()
-                            .background(Color.white)
+                            .background(Color.buttons)
                             .cornerRadius(10)
                     }
                 }
@@ -127,15 +130,22 @@ struct StruggleView: View {
 
                 VStack {
                     Button(action: {
-                        sessionInPlay.toggle()
-                        reset()
+                        if struggleDataManager.struggleQuestions.isEmpty {
+                            showAlert.toggle()
+                        } else {
+                            sessionInPlay.toggle()
+                            reset()
+                        }
                     }) {
                         Text("Start Session")
                             .font(.title)
                             .padding()
-                            .background(Color.white)
+                            .background(Color.buttons)
                             .cornerRadius(10)
                     }
+                }
+                .alert(isPresented: $showAlert) {
+                    Alert(title: Text("No Struggle Questions"), message: Text("Please answer some questions in the main view to generate struggle questions."), dismissButton: .default(Text("OK")))
                 }
             }
 
@@ -144,20 +154,21 @@ struct StruggleView: View {
                     .edgesIgnoringSafeArea(.all)
 
                 VStack {
-//                    SessionStatisticsView(dataManager: struggleDataManager, sessionQuestionCount: sessionQuestionCount, sessionCorrectAnswers: points, sessionWrongAnswers: sessionWrongAnswers)
-
+                    SessionStatisticsView(sessionQuestionCount: sessionQuestionCount, sessionCorrectAnswers: starsDataManager.sessionCorrectAnswers, sessionWrongAnswers: sessionWrongAnswers)
+                    
                     Button(action: {
                         sessionStats.toggle()
                         sessionInPlay.toggle()
+                        dataManager.loadQuestions()
                         points = 0
+                        starsDataManager.sessionCorrectAnswers = 0
                         sessionWrongAnswers = 0
                         sessionQuestionCount = 0
-                        reset()
                     }) {
                         Text("Continue")
                             .font(.title)
                             .padding()
-                            .background(Color.white)
+                            .background(Color.buttons)
                             .cornerRadius(10)
                     }
                 }
@@ -185,6 +196,9 @@ struct StruggleView: View {
         }
         .onAppear {
             reset()
+        }
+        .onAppear {
+            struggleDataManager.refreshData(with: dataManager.askedQuestions)
         }
     }
 
