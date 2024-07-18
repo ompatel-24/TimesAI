@@ -73,6 +73,7 @@ struct StruggleView: View {
                     .frame(maxWidth: .infinity, alignment: .center)
                     .padding()
                     .fontDesign(.serif)
+                    .foregroundStyle(Color.text)
                     .background(Color.buttons)
                     .cornerRadius(10)
                 }
@@ -94,9 +95,10 @@ struct StruggleView: View {
                     .edgesIgnoringSafeArea(.all)
 
                 VStack {
-                    Text("Paused")
-                        .font(.largeTitle)
+                    Text("PAUSED")
+                        .font(Font.custom("BigillaBold", size: 50))
                         .fontWeight(.bold)
+                        .foregroundStyle(Color.text)
                         .foregroundColor(.white)
                         .padding()
 
@@ -107,6 +109,7 @@ struct StruggleView: View {
                         Text("Resume")
                             .font(.title)
                             .padding()
+                            .foregroundStyle(Color.text)
                             .background(Color.buttons)
                             .cornerRadius(10)
                     }
@@ -118,10 +121,16 @@ struct StruggleView: View {
                         Text("End Session")
                             .font(.title)
                             .padding()
+                            .foregroundStyle(Color.text)
                             .background(Color.buttons)
                             .cornerRadius(10)
                     }
                 }
+                .font(Font.custom("BigillaBold", size: 50))
+                .foregroundStyle(Color.text)
+                .padding()
+                .background(Color.buttons)
+                .cornerRadius(10)
             }
 
             if !sessionInPlay {
@@ -137,9 +146,10 @@ struct StruggleView: View {
                             reset()
                         }
                     }) {
-                        Text("Start Session")
-                            .font(.title)
+                        Text("start session")
+                            .font(Font.custom("BigillaBold", size: 50))
                             .padding()
+                            .foregroundStyle(Color.text)
                             .background(Color.buttons)
                             .cornerRadius(10)
                     }
@@ -165,13 +175,19 @@ struct StruggleView: View {
                         sessionWrongAnswers = 0
                         sessionQuestionCount = 0
                     }) {
-                        Text("Continue")
-                            .font(.title)
+                        Text("continue")
+                            .font(Font.custom("BigillaBold", size: 50))
                             .padding()
+                            .foregroundStyle(Color.text)
                             .background(Color.buttons)
                             .cornerRadius(10)
                     }
                 }
+                .font(Font.custom("BigillaBold", size: 50))
+                .foregroundStyle(Color.text)
+                .padding()
+                .background(Color.buttons)
+                .cornerRadius(10)
             }
 
             if showingBalloon {

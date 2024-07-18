@@ -1,0 +1,18 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "ZU6-1X-7ei.text" : {
+      "comment" : "Class = \"UILabel\"; text = \"TIMES AI\"; ObjectID = \"ZU6-1X-7ei\";",
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "TIMES AI"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

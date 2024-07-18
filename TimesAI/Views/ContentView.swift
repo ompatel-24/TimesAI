@@ -169,6 +169,7 @@ struct ContentView: View {
                     .frame(maxWidth: .infinity, alignment: .center)
                     .padding()
                     .fontDesign(.serif)
+                    .foregroundStyle(Color.text)
                     .background(Color.buttons)
                     .cornerRadius(10)
                 }
@@ -190,10 +191,10 @@ struct ContentView: View {
                     .edgesIgnoringSafeArea(.all)
                 
                 VStack {
-                    Text("Paused")
-                        .font(.largeTitle)
+                    Text("PAUSED")
+                        .font(Font.custom("BigillaBold", size: 50))
                         .fontWeight(.bold)
-                        .foregroundColor(.white)
+                        .foregroundStyle(Color.text)
                         .padding()
 
                     Button(action: {
@@ -202,7 +203,9 @@ struct ContentView: View {
                     }) {
                         Text("Resume")
                             .font(.title)
+                            .fontDesign(.serif)
                             .padding()
+                            .foregroundStyle(Color.text)
                             .background(Color.buttons)
                             .cornerRadius(10)
                     }
@@ -213,11 +216,18 @@ struct ContentView: View {
                     }) {
                         Text("End Session")
                             .font(.title)
+                            .fontDesign(.serif)
+                            .foregroundStyle(Color.text)
                             .padding()
                             .background(Color.buttons)
                             .cornerRadius(10)
                     }
                 }
+                .font(Font.custom("BigillaBold", size: 50))
+                .foregroundStyle(Color.text)
+                .padding()
+                .background(Color.buttons)
+                .cornerRadius(10)
             }
             
             if !sessionInPlay {
@@ -229,8 +239,9 @@ struct ContentView: View {
                         sessionInPlay.toggle()
                         reset()
                     }) {
-                        Text("Start Session")
-                            .font(.title)
+                        Text("start session")
+                            .font(Font.custom("BigillaBold", size: 50))
+                            .foregroundStyle(Color.text)
                             .padding()
                             .background(Color.buttons)
                             .cornerRadius(10)
@@ -254,13 +265,19 @@ struct ContentView: View {
                         sessionWrongAnswers = 0
                         sessionQuestionCount = 0
                     }) {
-                        Text("Continue")
-                            .font(.title)
+                        Text("continue")
+                            .font(Font.custom("BigillaBold", size: 50))
                             .padding()
                             .background(Color.buttons)
+                            .foregroundStyle(Color.text)
                             .cornerRadius(10)
                     }
                 }
+                .font(Font.custom("BigillaBold", size: 50))
+                .foregroundStyle(Color.text)
+                .padding()
+                .background(Color.buttons)
+                .cornerRadius(10)
             }
 
             if showingBalloon {
@@ -314,6 +331,13 @@ struct ContentView: View {
 
         questionStartTime = Date()
         secondChance = false
+        
+        for family in UIFont.familyNames {
+            print(family)
+            for names in UIFont.fontNames(forFamilyName: family){
+                print("== \(names)")
+            }
+        }
     }
 
     func handleAnswer(_ selectedOption: String) {
@@ -563,17 +587,23 @@ struct SessionStatisticsView: View {
     
     var body: some View {
         VStack {
-            Text("Session Statistics")
-                .font(.largeTitle)
+            Text("session stats")
+                .font(Font.custom("BigillaBold", size: 50))
                 .padding()
             
             Text("Questions Answered: \(sessionQuestionCount)")
+                .font(.title2)
+                .fontDesign(.serif)
             Text("Correct Answers: \(sessionCorrectAnswers)")
+                .font(.title2)
+                .fontDesign(.serif)
             Text("Wrong Answers: \(sessionWrongAnswers)")
+                .font(.title2)
+                .fontDesign(.serif)
         }
-        .font(.title2)
         .padding()
         .background(Color.buttons)
+        .foregroundStyle(Color.text)
         .cornerRadius(10)
         .shadow(radius: 10)
     }
