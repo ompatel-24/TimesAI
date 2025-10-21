@@ -643,20 +643,15 @@ struct CrossView: View {
     }
 }
 
-extension Color {
-    init(hex: String) {
-        let scanner = Scanner(string: hex)
-        var rgbValue: UInt64 = 0
+// Hex color extension moved to Theme.swift
 
-        if scanner.scanHexInt64(&rgbValue) {
-            let red = Double((rgbValue & 0xFF0000) >> 16) / 255.0
-            let green = Double((rgbValue & 0x00FF00) >> 8) / 255.0
-            let blue = Double(rgbValue & 0x0000FF) / 255.0
-            self.init(red: red, green: green, blue: blue)
-            return
+extension UIColor {
+    static var background: UIColor {
+        UIColor { traitCollection in
+            traitCollection.userInterfaceStyle == .dark ? 
+                UIColor(red: 0.06, green: 0.09, blue: 0.16, alpha: 1.0) :
+                UIColor(red: 0.97, green: 0.98, blue: 0.99, alpha: 1.0)
         }
-
-        self.init(red: 0, green: 0, blue: 0)
     }
 }
 
