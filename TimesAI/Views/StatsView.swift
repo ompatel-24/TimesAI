@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Charts
+import SwiftData
 
 struct StatsView: View {
     @EnvironmentObject var gameManager: GameManager
@@ -26,13 +27,10 @@ struct StatsView: View {
                     
                     // Streak calendar
                     streakSection
-                    
-                    // Struggling questions
-                    strugglingQuestionsSection
                 }
                 .padding(AppTheme.Spacing.lg)
             }
-            .background(AppTheme.Colors.background.ignoresSafeArea())
+            .background(AppTheme.Colors.appBackground.ignoresSafeArea())
             .navigationTitle("Your Progress")
             .navigationBarTitleDisplayMode(.large)
         }
@@ -120,7 +118,7 @@ struct StatsView: View {
                 ZStack(alignment: .leading) {
                     // Background
                     RoundedRectangle(cornerRadius: AppTheme.CornerRadius.sm)
-                        .fill(AppTheme.Colors.background)
+                        .fill(AppTheme.Colors.appBackground)
                         .frame(height: 12)
                     
                     // Progress
@@ -152,9 +150,15 @@ struct StatsView: View {
     
     private var masteryHeatmapSection: some View {
         VStack(alignment: .leading, spacing: AppTheme.Spacing.md) {
-            Text("Times Tables Mastery")
-                .font(AppTheme.Typography.title2)
-                .foregroundColor(AppTheme.Colors.textPrimary)
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Times Tables Mastery")
+                    .font(AppTheme.Typography.title2)
+                    .foregroundColor(AppTheme.Colors.textPrimary)
+                
+                Text("Mastery combines accuracy, speed, and consistency")
+                    .font(AppTheme.Typography.caption)
+                    .foregroundColor(AppTheme.Colors.textSecondary)
+            }
             
             let masteryByTable = gameManager.getMasteryByTable()
             
@@ -229,12 +233,25 @@ struct StatsView: View {
                 
                 Spacer()
                 
-                Text("\(gameManager.userProgress.unlockedAchievements.count)/\(Achievement.allAchievements.count)")
-                    .font(AppTheme.Typography.caption)
-                    .foregroundColor(AppTheme.Colors.textSecondary)
+                HStack(spacing: 6) {
+                    Image(systemName: "trophy.fill")
+                        .font(.system(size: 14))
+                        .foregroundColor(AppTheme.Colors.warning)
+                    
+                    Text("\(gameManager.userProgress.unlockedAchievements.count)/\(Achievement.allAchievements.count)")
+                        .font(AppTheme.Typography.body)
+                        .fontWeight(.semibold)
+                        .foregroundColor(AppTheme.Colors.textPrimary)
+                }
+                .padding(.horizontal, 12)
+                .padding(.vertical, 6)
+                .background(
+                    Capsule()
+                        .fill(AppTheme.Colors.warning.opacity(0.15))
+                )
             }
             
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: 3), spacing: 12) {
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 12), count: 3), spacing: 16) {
                 ForEach(Achievement.allAchievements) { achievement in
                     achievementBadge(achievement, isUnlocked: gameManager.userProgress.unlockedAchievements.contains(achievement.id))
                 }
@@ -249,25 +266,67 @@ struct StatsView: View {
     }
     
     private func achievementBadge(_ achievement: Achievement, isUnlocked: Bool) -> some View {
-        VStack(spacing: 8) {
+        VStack(spacing: 10) {
             ZStack {
                 Circle()
-                    .fill(isUnlocked ? AppTheme.Colors.warning.opacity(0.2) : AppTheme.Colors.background)
-                    .frame(width: 60, height: 60)
+                    .fill(
+                        isUnlocked 
+                        ? LinearGradient(
+                            colors: [AppTheme.Colors.warning.opacity(0.3), AppTheme.Colors.accent.opacity(0.2)],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                        : LinearGradient(
+                            colors: [AppTheme.Colors.appBackground, AppTheme.Colors.appBackground],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+                    .frame(width: 70, height: 70)
+                    .overlay(
+                        Circle()
+                            .stroke(
+                                isUnlocked ? AppTheme.Colors.warning.opacity(0.3) : AppTheme.Colors.textTertiary.opacity(0.2),
+                                lineWidth: 2
+                            )
+                    )
                 
                 Image(systemName: achievement.iconName)
-                    .font(.system(size: 24))
+                    .font(.system(size: 28))
                     .foregroundColor(isUnlocked ? AppTheme.Colors.warning : AppTheme.Colors.textTertiary)
+                
+                // Shine effect for unlocked achievements
+                if isUnlocked {
+                    Circle()
+                        .fill(
+                            RadialGradient(
+                                colors: [.white.opacity(0.3), .clear],
+                                center: .topLeading,
+                                startRadius: 0,
+                                endRadius: 35
+                            )
+                        )
+                        .frame(width: 70, height: 70)
+                }
             }
             
-            Text(achievement.title)
-                .font(AppTheme.Typography.caption)
-                .foregroundColor(isUnlocked ? AppTheme.Colors.textPrimary : AppTheme.Colors.textTertiary)
-                .multilineTextAlignment(.center)
-                .lineLimit(2)
-                .fixedSize(horizontal: false, vertical: true)
+            VStack(spacing: 2) {
+                Text(achievement.title)
+                    .font(AppTheme.Typography.caption)
+                    .fontWeight(isUnlocked ? .semibold : .regular)
+                    .foregroundColor(isUnlocked ? AppTheme.Colors.textPrimary : AppTheme.Colors.textTertiary)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
+                    .fixedSize(horizontal: false, vertical: true)
+                
+                if !isUnlocked {
+                    Text("Locked")
+                        .font(.system(size: 10))
+                        .foregroundColor(AppTheme.Colors.textTertiary)
+                }
+            }
         }
-        .opacity(isUnlocked ? 1.0 : 0.5)
+        .opacity(isUnlocked ? 1.0 : 0.6)
     }
     
     // MARK: - Streak
@@ -324,83 +383,6 @@ struct StatsView: View {
             }
         }
         .frame(maxWidth: .infinity)
-    }
-    
-    // MARK: - Struggling Questions
-    
-    private var strugglingQuestionsSection: some View {
-        VStack(alignment: .leading, spacing: AppTheme.Spacing.md) {
-            Text("Questions to Review")
-                .font(AppTheme.Typography.title2)
-                .foregroundColor(AppTheme.Colors.textPrimary)
-            
-            let strugglingQuestions = gameManager.getStrugglingQuestions().prefix(5)
-            
-            if strugglingQuestions.isEmpty {
-                HStack {
-                    Spacer()
-                    VStack(spacing: 12) {
-                        Image(systemName: "checkmark.circle.fill")
-                            .font(.system(size: 48))
-                            .foregroundColor(AppTheme.Colors.success)
-                        
-                        Text("All caught up!")
-                            .font(AppTheme.Typography.body)
-                            .foregroundColor(AppTheme.Colors.textSecondary)
-                    }
-                    .padding(AppTheme.Spacing.xl)
-                    Spacer()
-                }
-            } else {
-                ForEach(Array(strugglingQuestions)) { question in
-                    strugglingQuestionRow(question)
-                }
-            }
-        }
-        .padding(AppTheme.Spacing.md)
-        .background(
-            RoundedRectangle(cornerRadius: AppTheme.CornerRadius.md)
-                .fill(AppTheme.Colors.surface)
-                .shadow(color: .black.opacity(0.05), radius: 4)
-        )
-    }
-    
-    private func strugglingQuestionRow(_ question: MultiplicationQuestion) -> some View {
-        HStack(spacing: AppTheme.Spacing.md) {
-            // Question
-            Text(question.questionText)
-                .font(AppTheme.Typography.headline)
-                .foregroundColor(AppTheme.Colors.textPrimary)
-                .frame(width: 80, alignment: .leading)
-            
-            // Mastery bar
-            GeometryReader { geometry in
-                ZStack(alignment: .leading) {
-                    RoundedRectangle(cornerRadius: 4)
-                        .fill(AppTheme.Colors.background)
-                        .frame(height: 8)
-                    
-                    RoundedRectangle(cornerRadius: 4)
-                        .fill(masteryColor(for: question.masteryScore))
-                        .frame(
-                            width: geometry.size.width * CGFloat(question.masteryScore / 100),
-                            height: 8
-                        )
-                }
-            }
-            .frame(height: 8)
-            
-            // Mastery score
-            Text("\(Int(question.masteryScore))%")
-                .font(AppTheme.Typography.caption)
-                .foregroundColor(AppTheme.Colors.textSecondary)
-                .frame(width: 40, alignment: .trailing)
-        }
-        .padding(AppTheme.Spacing.sm)
-        .background(
-            RoundedRectangle(cornerRadius: AppTheme.CornerRadius.sm)
-                .fill(AppTheme.Colors.background)
-        )
     }
 }
 

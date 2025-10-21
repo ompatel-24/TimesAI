@@ -18,6 +18,18 @@
 		8F50271D2C179E9400832ADA /* StruggleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F50271C2C179E9400832ADA /* StruggleView.swift */; };
 		8F50271F2C179EA600832ADA /* StatisticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F50271E2C179EA600832ADA /* StatisticsView.swift */; };
 		8FCAFFC32C48E31A009958E6 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8FCAFFC22C48E31A009958E6 /* Launch Screen.storyboard */; };
+		8F9001012D00000100000002 /* GameManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F9001002D00000100000001 /* GameManager.swift */; };
+		8F9002012D00000100000002 /* QuestionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F9002002D00000100000001 /* QuestionModel.swift */; };
+		8F9002112D00000100000002 /* UserProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F9002102D00000100000001 /* UserProgress.swift */; };
+		8F9003012D00000100000002 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F9003002D00000100000001 /* Theme.swift */; };
+		8F9004012D00000100000002 /* LearningView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F9004002D00000100000001 /* LearningView.swift */; };
+		8F9004112D00000100000002 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F9004102D00000100000001 /* MainTabView.swift */; };
+		8F9004212D00000100000002 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F9004202D00000100000001 /* OnboardingView.swift */; };
+		8F9004312D00000100000002 /* PracticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F9004302D00000100000001 /* PracticeView.swift */; };
+		8F9004412D00000100000002 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F9004402D00000100000001 /* ProfileView.swift */; };
+		8F9004512D00000100000002 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F9004502D00000100000001 /* StatsView.swift */; };
+		8F9005012D00000100000002 /* WeakAreasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F9005002D00000100000001 /* WeakAreasView.swift */; };
+		8F9005112D00000100000002 /* TablePracticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F9005102D00000100000001 /* TablePracticeView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,6 +45,18 @@
 		8F50271C2C179E9400832ADA /* StruggleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StruggleView.swift; sourceTree = "<group>"; };
 		8F50271E2C179EA600832ADA /* StatisticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsView.swift; sourceTree = "<group>"; };
 		8FCAFFC22C48E31A009958E6 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
+		8F9001002D00000100000001 /* GameManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameManager.swift; sourceTree = "<group>"; };
+		8F9002002D00000100000001 /* QuestionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionModel.swift; sourceTree = "<group>"; };
+		8F9002102D00000100000001 /* UserProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProgress.swift; sourceTree = "<group>"; };
+		8F9003002D00000100000001 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		8F9004002D00000100000001 /* LearningView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LearningView.swift; sourceTree = "<group>"; };
+		8F9004102D00000100000001 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
+		8F9004202D00000100000001 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		8F9004302D00000100000001 /* PracticeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PracticeView.swift; sourceTree = "<group>"; };
+		8F9004402D00000100000001 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		8F9004502D00000100000001 /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
+		8F9005002D00000100000001 /* WeakAreasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeakAreasView.swift; sourceTree = "<group>"; };
+		8F9005102D00000100000001 /* TablePracticeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TablePracticeView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,6 +98,9 @@
 		8F5027092C179E4F00832ADA /* TimesAI */ = {
 			isa = PBXGroup;
 			children = (
+				8F900A202D00000100000001 /* Theme */,
+				8F900A002D00000100000001 /* Managers */,
+				8F900A102D00000100000001 /* Models */,
 				8F045C4C2C44B464005688F8 /* fonts */,
 				8F5027222C1A487200832ADA /* Views */,
 				8F50270A2C179E4F00832ADA /* TimesAIApp.swift */,
@@ -100,8 +127,41 @@
 				8F2EDD6E2C1E0E41000F4470 /* SettingsView.swift */,
 				8F50271C2C179E9400832ADA /* StruggleView.swift */,
 				8F50271E2C179EA600832ADA /* StatisticsView.swift */,
+				8F9004002D00000100000001 /* LearningView.swift */,
+				8F9004102D00000100000001 /* MainTabView.swift */,
+				8F9004202D00000100000001 /* OnboardingView.swift */,
+				8F9004302D00000100000001 /* PracticeView.swift */,
+				8F9004402D00000100000001 /* ProfileView.swift */,
+				8F9004502D00000100000001 /* StatsView.swift */,
+				8F9005002D00000100000001 /* WeakAreasView.swift */,
+				8F9005102D00000100000001 /* TablePracticeView.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		8F900A002D00000100000001 /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				8F9001002D00000100000001 /* GameManager.swift */,
+			);
+			path = Managers;
+			sourceTree = "<group>";
+		};
+		8F900A102D00000100000001 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				8F9002002D00000100000001 /* QuestionModel.swift */,
+				8F9002102D00000100000001 /* UserProgress.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		8F900A202D00000100000001 /* Theme */ = {
+			isa = PBXGroup;
+			children = (
+				8F9003002D00000100000001 /* Theme.swift */,
+			);
+			path = Theme;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -183,6 +243,18 @@
 				8F2EDD6F2C1E0E41000F4470 /* SettingsView.swift in Sources */,
 				8F50270F2C179E4F00832ADA /* Item.swift in Sources */,
 				8F50270B2C179E4F00832ADA /* TimesAIApp.swift in Sources */,
+				8F9001012D00000100000002 /* GameManager.swift in Sources */,
+				8F9002012D00000100000002 /* QuestionModel.swift in Sources */,
+				8F9002112D00000100000002 /* UserProgress.swift in Sources */,
+				8F9003012D00000100000002 /* Theme.swift in Sources */,
+				8F9004012D00000100000002 /* LearningView.swift in Sources */,
+				8F9004112D00000100000002 /* MainTabView.swift in Sources */,
+				8F9004212D00000100000002 /* OnboardingView.swift in Sources */,
+				8F9004312D00000100000002 /* PracticeView.swift in Sources */,
+				8F9004412D00000100000002 /* ProfileView.swift in Sources */,
+				8F9004512D00000100000002 /* StatsView.swift in Sources */,
+				8F9005012D00000100000002 /* WeakAreasView.swift in Sources */,
+				8F9005112D00000100000002 /* TablePracticeView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -314,6 +386,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = NO;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -354,6 +427,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = NO;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;

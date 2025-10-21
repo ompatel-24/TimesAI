@@ -73,8 +73,8 @@ struct StruggleView: View {
                     .frame(maxWidth: .infinity, alignment: .center)
                     .padding()
                     .fontDesign(.serif)
-                    .foregroundStyle(Color.text)
-                    .background(Color.buttons)
+                    .foregroundStyle(AppTheme.Colors.textPrimary)
+                    .background(AppTheme.Colors.primary)
                     .cornerRadius(10)
                 }
 
@@ -98,7 +98,7 @@ struct StruggleView: View {
                     Text("PAUSED")
                         .font(Font.custom("BigillaBold", size: 50))
                         .fontWeight(.bold)
-                        .foregroundStyle(Color.text)
+                        .foregroundStyle(AppTheme.Colors.textPrimary)
                         .foregroundColor(.white)
                         .padding()
 
@@ -109,8 +109,8 @@ struct StruggleView: View {
                         Text("Resume")
                             .font(.title)
                             .padding()
-                            .foregroundStyle(Color.text)
-                            .background(Color.buttons)
+                            .foregroundStyle(AppTheme.Colors.textPrimary)
+                            .background(AppTheme.Colors.primary)
                             .cornerRadius(10)
                     }
 
@@ -121,15 +121,15 @@ struct StruggleView: View {
                         Text("End Session")
                             .font(.title)
                             .padding()
-                            .foregroundStyle(Color.text)
-                            .background(Color.buttons)
+                            .foregroundStyle(AppTheme.Colors.textPrimary)
+                            .background(AppTheme.Colors.primary)
                             .cornerRadius(10)
                     }
                 }
                 .font(Font.custom("BigillaBold", size: 50))
-                .foregroundStyle(Color.text)
+                .foregroundStyle(AppTheme.Colors.textPrimary)
                 .padding()
-                .background(Color.buttons)
+                .background(AppTheme.Colors.primary)
                 .cornerRadius(10)
             }
 
@@ -149,8 +149,8 @@ struct StruggleView: View {
                         Text("start session")
                             .font(Font.custom("BigillaBold", size: 50))
                             .padding()
-                            .foregroundStyle(Color.text)
-                            .background(Color.buttons)
+                            .foregroundStyle(AppTheme.Colors.textPrimary)
+                            .background(AppTheme.Colors.primary)
                             .cornerRadius(10)
                     }
                 }
@@ -178,15 +178,15 @@ struct StruggleView: View {
                         Text("continue")
                             .font(Font.custom("BigillaBold", size: 50))
                             .padding()
-                            .foregroundStyle(Color.text)
-                            .background(Color.buttons)
+                            .foregroundStyle(AppTheme.Colors.textPrimary)
+                            .background(AppTheme.Colors.primary)
                             .cornerRadius(10)
                     }
                 }
                 .font(Font.custom("BigillaBold", size: 50))
-                .foregroundStyle(Color.text)
+                .foregroundStyle(AppTheme.Colors.textPrimary)
                 .padding()
-                .background(Color.buttons)
+                .background(AppTheme.Colors.primary)
                 .cornerRadius(10)
             }
 

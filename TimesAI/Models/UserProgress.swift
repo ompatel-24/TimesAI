@@ -165,7 +165,7 @@ struct Achievement: Identifiable, Codable {
 extension Achievement {
     static let allAchievements: [Achievement] = [
         Achievement(id: "first_blood", title: "First Steps", description: "Answer your first question", iconName: "star.fill", xpReward: 50, requirement: .answeredQuestions(1)),
-        Achievement(id: "century", title: "Century", description: "Answer 100 questions", iconName: "100.circle.fill", xpReward: 200, requirement: .answeredQuestions(100)),
+        Achievement(id: "century", title: "Century", description: "Answer 100 questions", iconName: "number.circle.fill", xpReward: 200, requirement: .answeredQuestions(100)),
         Achievement(id: "accuracy_ace", title: "Accuracy Ace", description: "Maintain 90% accuracy over 50 questions", iconName: "target", xpReward: 300, requirement: .accuracyAbove(0.9)),
         Achievement(id: "speed_demon", title: "Speed Demon", description: "Average under 3 seconds per question", iconName: "bolt.fill", xpReward: 250, requirement: .speedDemon(3.0)),
         Achievement(id: "week_warrior", title: "Week Warrior", description: "Maintain a 7-day streak", iconName: "calendar", xpReward: 400, requirement: .streakDays(7)),

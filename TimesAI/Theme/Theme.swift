@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Foundation
 
 struct AppTheme {
     // MARK: - Colors
@@ -21,15 +22,55 @@ struct AppTheme {
         static let warning = Color(hex: "F59E0B") // Amber
         static let info = Color(hex: "3B82F6") // Blue
         
-        // Neutral
-        static let background = Color(hex: "F8FAFC")
-        static let backgroundDark = Color(hex: "0F172A")
-        static let surface = Color.white
-        static let surfaceDark = Color(hex: "1E293B")
+        // Adaptive backgrounds - automatically adjust for light/dark mode
+        static var appBackground: Color {
+            Color(UIColor { traitCollection in
+                traitCollection.userInterfaceStyle == .dark
+                    ? UIColor(hex: "0F172A")
+                    : UIColor(hex: "F8FAFC")
+            })
+        }
         
-        static let textPrimary = Color(hex: "1E293B")
-        static let textSecondary = Color(hex: "64748B")
-        static let textTertiary = Color(hex: "94A3B8")
+        static var surface: Color {
+            Color(UIColor { traitCollection in
+                traitCollection.userInterfaceStyle == .dark
+                    ? UIColor(hex: "1E293B")
+                    : UIColor.white
+            })
+        }
+        
+        static var surfaceLight: Color {
+            Color(UIColor { traitCollection in
+                traitCollection.userInterfaceStyle == .dark
+                    ? UIColor(hex: "334155")
+                    : UIColor(hex: "F1F5F9")
+            })
+        }
+        
+        // Adaptive text colors
+        static var textPrimary: Color {
+            Color(UIColor { traitCollection in
+                traitCollection.userInterfaceStyle == .dark
+                    ? UIColor.white
+                    : UIColor(hex: "1E293B")
+            })
+        }
+        
+        static var textSecondary: Color {
+            Color(UIColor { traitCollection in
+                traitCollection.userInterfaceStyle == .dark
+                    ? UIColor(hex: "CBD5E1")
+                    : UIColor(hex: "64748B")
+            })
+        }
+        
+        static var textTertiary: Color {
+            Color(UIColor { traitCollection in
+                traitCollection.userInterfaceStyle == .dark
+                    ? UIColor(hex: "94A3B8")
+                    : UIColor(hex: "94A3B8")
+            })
+        }
         
         // Mastery colors
         static let mastery = [
@@ -102,7 +143,32 @@ struct AppTheme {
     }
 }
 
-// MARK: - Color Extension for Hex
+// MARK: - Color Extensions
+
+extension UIColor {
+    convenience init(hex: String) {
+        let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+        var int: UInt64 = 0
+        Scanner(string: hex).scanHexInt64(&int)
+        let a, r, g, b: UInt64
+        switch hex.count {
+        case 3: // RGB (12-bit)
+            (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
+        case 6: // RGB (24-bit)
+            (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
+        case 8: // ARGB (32-bit)
+            (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
+        default:
+            (a, r, g, b) = (1, 1, 1, 0)
+        }
+        self.init(
+            red: CGFloat(r) / 255,
+            green: CGFloat(g) / 255,
+            blue: CGFloat(b) / 255,
+            alpha: CGFloat(a) / 255
+        )
+    }
+}
 
 extension Color {
     init(hex: String) {

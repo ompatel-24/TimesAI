@@ -35,7 +35,7 @@ final class MultiplicationQuestion {
         self.firstNumber = firstNumber
         self.secondNumber = secondNumber
         self.answer = firstNumber * secondNumber
-        self.difficultyWeight = Double(answer) / 12.0 // Normalized difficulty
+        self.difficultyWeight = Double(firstNumber * secondNumber) / 12.0 // Normalized difficulty
         
         self.totalAttempts = 0
         self.correctAttempts = 0
@@ -64,14 +64,18 @@ final class MultiplicationQuestion {
     }
     
     var isStruggling: Bool {
-        // Struggling if: low accuracy, slow response, or needs review
+        // Struggling if: needs review (marked after wrong answer) OR has poor performance metrics
+        if needsReview {
+            return true
+        }
+        
         guard totalAttempts >= 3 else { return false }
         
         let slowThreshold = 8.0 + (difficultyWeight * 0.5) // Harder questions get more time
         let isAccuratePoor = accuracyRate < 0.6
         let isResponseSlow = averageResponseTime > slowThreshold
         
-        return isAccuratePoor || isResponseSlow || needsReview
+        return isAccuratePoor || isResponseSlow
     }
     
     func recordAttempt(correct: Bool, responseTime: TimeInterval) {

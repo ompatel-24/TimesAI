@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct LearningView: View {
     @EnvironmentObject var gameManager: GameManager
@@ -17,15 +18,14 @@ struct LearningView: View {
     @State private var shakeOffset: CGFloat = 0
     @State private var showExplanation = false
     
-    var strugglingQuestions: [MultiplicationQuestion] {
-        gameManager.getStrugglingQuestions()
-    }
+    @State private var strugglingQuestions: [MultiplicationQuestion] = []
+    @State private var refreshTimer: Timer?
     
     var body: some View {
         ZStack {
             // Background gradient with warmer tone for learning
             LinearGradient(
-                colors: [AppTheme.Colors.background, AppTheme.Colors.warning.opacity(0.1)],
+                colors: [AppTheme.Colors.appBackground, AppTheme.Colors.warning.opacity(0.1)],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
@@ -34,9 +34,13 @@ struct LearningView: View {
             if strugglingQuestions.isEmpty {
                 emptyState
             } else {
-                VStack(spacing: AppTheme.Spacing.lg) {
-                    // Top bar
-                    topBar
+                VStack(spacing: 0) {
+                    // Top bar with safe area consideration
+                    VStack(spacing: 0) {
+                        topBar
+                    }
+                    .padding(.top, AppTheme.Spacing.lg)
+                    .padding(.horizontal, AppTheme.Spacing.lg)
                     
                     Spacer()
                     
@@ -47,22 +51,25 @@ struct LearningView: View {
                                 insertion: .scale.combined(with: .opacity),
                                 removal: .scale.combined(with: .opacity)
                             ))
+                            .padding(.horizontal, AppTheme.Spacing.lg)
                     }
                     
                     Spacer()
                     
                     // Answer options
                     answerOptions
+                        .padding(.horizontal, AppTheme.Spacing.lg)
                     
                     // Helper explanation
                     if showExplanation, let question = gameManager.currentQuestion {
                         explanationView(for: question)
                             .transition(.move(edge: .bottom).combined(with: .opacity))
+                            .padding(.horizontal, AppTheme.Spacing.lg)
                     }
                     
                     Spacer()
                 }
-                .padding(AppTheme.Spacing.lg)
+                .padding(.bottom, AppTheme.Spacing.lg)
             }
             
             // Particle effects overlay
@@ -72,9 +79,15 @@ struct LearningView: View {
             }
         }
         .onAppear {
-            if !strugglingQuestions.isEmpty {
-                startNewQuestion()
+            refreshStrugglingQuestions()
+            // Start a timer to refresh struggling questions periodically
+            refreshTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
+                refreshStrugglingQuestions()
             }
+        }
+        .onDisappear {
+            refreshTimer?.invalidate()
+            refreshTimer = nil
         }
     }
     
@@ -215,7 +228,7 @@ struct LearningView: View {
         .padding(.vertical, 8)
         .background(
             RoundedRectangle(cornerRadius: 8)
-                .fill(AppTheme.Colors.background)
+                .fill(AppTheme.Colors.appBackground)
         )
     }
     
@@ -298,8 +311,49 @@ struct LearningView: View {
     
     // MARK: - Actions
     
+    private func refreshStrugglingQuestions() {
+        let newList = gameManager.getStrugglingQuestions()
+        
+        // Only update if the list has changed
+        if newList.count != strugglingQuestions.count ||
+           newList.map { $0.id } != strugglingQuestions.map { $0.id } {
+            strugglingQuestions = newList
+            
+            // If we have questions and no current question, start one
+            if !strugglingQuestions.isEmpty && gameManager.currentQuestion == nil {
+                startNewQuestion()
+            }
+            // If we had questions but now we don't, clear current question
+            else if strugglingQuestions.isEmpty {
+                gameManager.currentQuestion = nil
+            }
+            // If current question is no longer in struggling list, get a new one
+            else if !strugglingQuestions.contains(where: { $0.id == gameManager.currentQuestion?.id }) {
+                startNewQuestion()
+            }
+        }
+    }
+    
     private func startNewQuestion() {
-        gameManager.selectNextQuestion(mode: .learning)
+        // Select from struggling questions if available
+        if !strugglingQuestions.isEmpty {
+            // Prioritize questions that need review or have low mastery
+            let sortedByNeed = strugglingQuestions.sorted { q1, q2 in
+                if q1.needsReview != q2.needsReview {
+                    return q1.needsReview
+                }
+                return q1.masteryScore < q2.masteryScore
+            }
+            gameManager.currentQuestion = sortedByNeed.first
+        } else {
+            // Fallback to learning mode selection
+            gameManager.selectNextQuestion(mode: .learning)
+        }
+        
+        if let question = gameManager.currentQuestion {
+            gameManager.generateOptions(for: question)
+        }
+        
         questionStartTime = Date()
         selectedAnswer = nil
         showFeedback = false
@@ -328,6 +382,9 @@ struct LearningView: View {
         
         // Submit answer
         gameManager.submitAnswer(answer, responseTime: responseTime)
+        
+        // Refresh struggling questions list
+        refreshStrugglingQuestions()
         
         // Move to next question (with longer delay for learning)
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {

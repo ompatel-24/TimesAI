@@ -158,31 +158,43 @@ struct ContentView: View {
                 .foregroundColor(.white)
                 .ignoresSafeArea()
 
-            VStack {
-                HStack {
-                    StarsView(sessionCorrectAnswers: starsDataManager.sessionCorrectAnswers)
+            VStack(spacing: 0) {
+                // Top section with proper spacing
+                VStack(spacing: AppTheme.Spacing.md) {
+                    HStack {
+                        StarsView(sessionCorrectAnswers: starsDataManager.sessionCorrectAnswers)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                        
+                        Button("Pause") {
+                            isPaused.toggle()
+                        }
                         .frame(maxWidth: .infinity, alignment: .center)
-                    
-                    Button("Pause") {
-                        isPaused.toggle()
+                        .padding()
+                        .fontDesign(.serif)
+                        .foregroundStyle(AppTheme.Colors.textPrimary)
+                        .background(AppTheme.Colors.primary)
+                        .cornerRadius(10)
                     }
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .padding()
-                    .fontDesign(.serif)
-                    .foregroundStyle(Color.text)
-                    .background(Color.buttons)
-                    .cornerRadius(10)
                 }
-
+                .padding(.top, AppTheme.Spacing.lg)
+                .padding(.horizontal, AppTheme.Spacing.lg)
+                
                 Spacer()
+                
                 if let currentQuestion = currentQuestion {
-                    QuestionView(question: currentQuestion.question)
-                    Spacer()
-                    OptionsGrid(options: options, correctAnswer: currentQuestion.correctAnswer, handleAnswer: handleAnswer, showFlash: $showFlash, popIncorrect: $popIncorrect)
-                    StatisticsView(correctCount: currentQuestion.correctCount, wrongCount: currentQuestion.wrongCount, answerTimes: currentQuestion.answerTimes)
-                    Spacer()
+                    VStack(spacing: AppTheme.Spacing.xl) {
+                        QuestionView(question: currentQuestion.question)
+                        
+                        OptionsGrid(options: options, correctAnswer: currentQuestion.correctAnswer, handleAnswer: handleAnswer, showFlash: $showFlash, popIncorrect: $popIncorrect)
+                        
+                        StatisticsView(correctCount: currentQuestion.correctCount, wrongCount: currentQuestion.wrongCount, answerTimes: currentQuestion.answerTimes)
+                    }
+                    .padding(.horizontal, AppTheme.Spacing.lg)
                 }
+                
+                Spacer()
             }
+            .padding(.bottom, AppTheme.Spacing.lg)
             .disabled(isPaused || !sessionInPlay)
             .blur(radius: isPaused || !sessionInPlay ? 5 : 0)
 
@@ -194,7 +206,7 @@ struct ContentView: View {
                     Text("PAUSED")
                         .font(Font.custom("BigillaBold", size: 50))
                         .fontWeight(.bold)
-                        .foregroundStyle(Color.text)
+                        .foregroundStyle(AppTheme.Colors.textPrimary)
                         .padding()
 
                     Button(action: {
@@ -205,8 +217,8 @@ struct ContentView: View {
                             .font(.title)
                             .fontDesign(.serif)
                             .padding()
-                            .foregroundStyle(Color.text)
-                            .background(Color.buttons)
+                            .foregroundStyle(AppTheme.Colors.textPrimary)
+                            .background(AppTheme.Colors.primary)
                             .cornerRadius(10)
                     }
                     
@@ -217,16 +229,16 @@ struct ContentView: View {
                         Text("End Session")
                             .font(.title)
                             .fontDesign(.serif)
-                            .foregroundStyle(Color.text)
+                            .foregroundStyle(AppTheme.Colors.textPrimary)
                             .padding()
-                            .background(Color.buttons)
+                            .background(AppTheme.Colors.primary)
                             .cornerRadius(10)
                     }
                 }
                 .font(Font.custom("BigillaBold", size: 50))
-                .foregroundStyle(Color.text)
+                .foregroundStyle(AppTheme.Colors.textPrimary)
                 .padding()
-                .background(Color.buttons)
+                .background(AppTheme.Colors.primary)
                 .cornerRadius(10)
             }
             
@@ -241,9 +253,9 @@ struct ContentView: View {
                     }) {
                         Text("start session")
                             .font(Font.custom("BigillaBold", size: 50))
-                            .foregroundStyle(Color.text)
+                            .foregroundStyle(AppTheme.Colors.textPrimary)
                             .padding()
-                            .background(Color.buttons)
+                            .background(AppTheme.Colors.primary)
                             .cornerRadius(10)
                     }
                 }
@@ -268,15 +280,15 @@ struct ContentView: View {
                         Text("continue")
                             .font(Font.custom("BigillaBold", size: 50))
                             .padding()
-                            .background(Color.buttons)
-                            .foregroundStyle(Color.text)
+                            .background(AppTheme.Colors.primary)
+                            .foregroundStyle(AppTheme.Colors.textPrimary)
                             .cornerRadius(10)
                     }
                 }
                 .font(Font.custom("BigillaBold", size: 50))
-                .foregroundStyle(Color.text)
+                .foregroundStyle(AppTheme.Colors.textPrimary)
                 .padding()
-                .background(Color.buttons)
+                .background(AppTheme.Colors.primary)
                 .cornerRadius(10)
             }
 
@@ -314,20 +326,19 @@ struct ContentView: View {
         guard !dataManager.unaskedQuestions.isEmpty else { return }
 
         let randomIndex = Int.random(in: 0..<dataManager.unaskedQuestions.count)
-        currentQuestion = dataManager.unaskedQuestions.remove(at: randomIndex)
-        dataManager.askedQuestions.append(currentQuestion!)
+        let question = dataManager.unaskedQuestions.remove(at: randomIndex)
+        currentQuestion = question
+        dataManager.askedQuestions.append(question)
         dataManager.saveQuestions()
 
-        if let currentQuestion = currentQuestion {
-            var optionSet = Set<String>()
-            optionSet.insert("\(currentQuestion.correctAnswer)")
+        var optionSet = Set<String>()
+        optionSet.insert("\(question.correctAnswer)")
 
-            while optionSet.count < 3 {
-                optionSet.insert("\(Int.random(in: max(currentQuestion.correctAnswer - 6, 1)...min(currentQuestion.correctAnswer + 6, 100)))")
-            }
-
-            options = Array(optionSet).shuffled()
+        while optionSet.count < 3 {
+            optionSet.insert("\(Int.random(in: max(question.correctAnswer - 6, 1)...min(question.correctAnswer + 6, 100)))")
         }
+
+        options = Array(optionSet).shuffled()
 
         questionStartTime = Date()
         secondChance = false
@@ -498,7 +509,7 @@ struct OptionsGrid: View {
                     Text(option)
                         .padding()
                         .frame(width: 120, height: 120)
-                        .background(.buttons)
+                        .background(AppTheme.Colors.primary)
                         .foregroundColor(Color(textC ?? .label))
                         .font(.title)
                         .fontWeight(.bold)
@@ -602,8 +613,8 @@ struct SessionStatisticsView: View {
                 .fontDesign(.serif)
         }
         .padding()
-        .background(Color.buttons)
-        .foregroundStyle(Color.text)
+        .background(AppTheme.Colors.primary)
+        .foregroundStyle(AppTheme.Colors.textPrimary)
         .cornerRadius(10)
         .shadow(radius: 10)
     }

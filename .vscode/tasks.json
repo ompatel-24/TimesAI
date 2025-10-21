@@ -1,0 +1,14 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "xcodebuild-list",
+			"type": "shell",
+			"command": "xcodebuild -list -project /Users/ompatel/Projects/TimesAI/TimesAI.xcodeproj | cat",
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": "build"
+		}
+	]
+}

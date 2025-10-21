@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ProfileView: View {
     @EnvironmentObject var gameManager: GameManager
@@ -26,7 +27,7 @@ struct ProfileView: View {
                 }
                 .padding(AppTheme.Spacing.lg)
             }
-            .background(AppTheme.Colors.background.ignoresSafeArea())
+            .background(AppTheme.Colors.appBackground.ignoresSafeArea())
             .navigationTitle("Profile")
             .navigationBarTitleDisplayMode(.large)
         }
@@ -242,7 +243,7 @@ struct ProfileView: View {
                     .padding(AppTheme.Spacing.md)
                     .background(
                         RoundedRectangle(cornerRadius: AppTheme.CornerRadius.md)
-                            .fill(AppTheme.Colors.background)
+                            .fill(AppTheme.Colors.appBackground)
                     )
                 
                 Text("This is how you'll be identified in the app")

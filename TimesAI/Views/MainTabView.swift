@@ -6,30 +6,19 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct MainTabView: View {
     @EnvironmentObject var gameManager: GameManager
     @State private var selectedTab = 0
     @State private var showLevelUpCelebration = false
     @State private var showAchievementPopup = false
-    @State private var showOnboarding = false
     
     var body: some View {
-        ZStack {
-            if showOnboarding {
-                OnboardingView(showOnboarding: $showOnboarding)
-                    .transition(.move(edge: .trailing))
-            } else {
-                mainContent
+        mainContent
+            .onAppear {
+                gameManager.startSession()
             }
-        }
-        .onAppear {
-            // Show onboarding if user has never played
-            if gameManager.userProgress.totalQuestionsAnswered == 0 {
-                showOnboarding = true
-            }
-            gameManager.startSession()
-        }
     }
     
     private var mainContent: some View {
@@ -41,9 +30,9 @@ struct MainTabView: View {
                     }
                     .tag(0)
                 
-                LearningView()
+                WeakAreasView()
                     .tabItem {
-                        Label("Learn", systemImage: "brain.head.profile")
+                        Label("Sets", systemImage: "square.grid.2x2.fill")
                     }
                     .tag(1)
                 
@@ -52,77 +41,6 @@ struct MainTabView: View {
                         Label("Stats", systemImage: "chart.bar.fill")
                     }
                     .tag(2)
-                
-                ProfileView()
-                    .tabItem {
-                        Label("Profile", systemImage: "person.fill")
-                    }
-                    .tag(3)
-            }
-            .tint(AppTheme.Colors.primary)
-            
-            // Overlays for celebrations
-            if gameManager.showLevelUp {
-                LevelUpCelebrationView(level: gameManager.userProgress.level)
-                    .transition(.scale.combined(with: .opacity))
-                    .zIndex(100)
-                    .onAppear {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                            withAnimation {
-                                gameManager.showLevelUp = false
-                            }
-                        }
-                    }
-            }
-            
-            if !gameManager.recentlyUnlockedAchievements.isEmpty {
-                AchievementPopupView(achievements: gameManager.recentlyUnlockedAchievements)
-                    .transition(.move(edge: .top).combined(with: .opacity))
-                    .zIndex(99)
-                    .onAppear {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
-                            withAnimation {
-                                gameManager.recentlyUnlockedAchievements.removeAll()
-                            }
-                        }
-                    }
-            }
-        }
-        .onAppear {
-            // Show onboarding if user has never played
-            if gameManager.userProgress.totalQuestionsAnswered == 0 {
-                showOnboarding = true
-            }
-            gameManager.startSession()
-        }
-    }
-    
-    private var mainContent: some View {
-        ZStack {
-            TabView(selection: $selectedTab) {
-                PracticeView()
-                    .tabItem {
-                        Label("Practice", systemImage: "pencil")
-                    }
-                    .tag(0)
-                
-                LearningView()
-                    .tabItem {
-                        Label("Learn", systemImage: "brain.head.profile")
-                    }
-                    .tag(1)
-                
-                StatsView()
-                    .tabItem {
-                        Label("Stats", systemImage: "chart.bar.fill")
-                    }
-                    .tag(2)
-                
-                ProfileView()
-                    .tabItem {
-                        Label("Profile", systemImage: "person.fill")
-                    }
-                    .tag(3)
             }
             .tint(AppTheme.Colors.primary)
             

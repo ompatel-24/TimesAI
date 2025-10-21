@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct PracticeView: View {
     @EnvironmentObject var gameManager: GameManager
@@ -20,15 +21,19 @@ struct PracticeView: View {
         ZStack {
             // Background gradient
             LinearGradient(
-                colors: [AppTheme.Colors.background, AppTheme.Colors.primary.opacity(0.1)],
+                colors: [AppTheme.Colors.appBackground, AppTheme.Colors.primary.opacity(0.1)],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
             .ignoresSafeArea()
             
-            VStack(spacing: AppTheme.Spacing.lg) {
-                // Top bar
-                topBar
+            VStack(spacing: 0) {
+                // Top bar with safe area consideration
+                VStack(spacing: 0) {
+                    topBar
+                }
+                .padding(.top, AppTheme.Spacing.lg)
+                .padding(.horizontal, AppTheme.Spacing.lg)
                 
                 Spacer()
                 
@@ -39,16 +44,18 @@ struct PracticeView: View {
                             insertion: .scale.combined(with: .opacity),
                             removal: .scale.combined(with: .opacity)
                         ))
+                        .padding(.horizontal, AppTheme.Spacing.lg)
                 }
                 
                 Spacer()
                 
                 // Answer options
                 answerOptions
+                    .padding(.horizontal, AppTheme.Spacing.lg)
                 
                 Spacer()
             }
-            .padding(AppTheme.Spacing.lg)
+            .padding(.bottom, AppTheme.Spacing.lg)
             
             // Particle effects overlay
             if showParticles {
@@ -115,7 +122,7 @@ struct PracticeView: View {
     }
     
     private var answerOptions: some View {
-        VStack(spacing: AppTheme.Spacing.md) {
+        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: AppTheme.Spacing.md) {
             ForEach(gameManager.questionOptions, id: \.self) { option in
                 answerButton(for: option)
             }
@@ -123,16 +130,53 @@ struct PracticeView: View {
     }
     
     private func answerButton(for option: Int) -> some View {
-        Button {
+        let isSelected = selectedAnswer == option
+        let isCorrect = isCorrectAnswer && isSelected
+        let isWrong = !isCorrectAnswer && isSelected
+        
+        return Button(action: {
+            guard selectedAnswer == nil else { return }
             handleAnswerSelection(option)
-        } label: {
-            Text("\(option)")
+        }) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 24)
+                    .fill(buttonBackground(isCorrect: isCorrect, isWrong: isWrong))
+                    .shadow(
+                        color: buttonShadow(isCorrect: isCorrect, isWrong: isWrong),
+                        radius: showFeedback && (isCorrect || isWrong) ? 16 : 4,
+                        y: showFeedback && (isCorrect || isWrong) ? 8 : 2
+                    )
+                
+                Text("\(option)")
+                    .font(.system(size: 52, weight: .bold, design: .rounded))
+                    .foregroundColor(AppTheme.Colors.textPrimary)
+            }
+            .frame(height: 130)
+            .scaleEffect(isSelected && showFeedback ? 1.02 : 1.0)
+            .opacity(showFeedback && !isCorrect && !isSelected ? 0.5 : 1.0)
         }
-        .buttonStyle(AnswerButtonStyle(
-            isCorrect: showFeedback && isCorrectAnswer && selectedAnswer == option,
-            isWrong: showFeedback && !isCorrectAnswer && selectedAnswer == option
-        ))
+        .buttonStyle(BounceButtonStyle())
         .disabled(showFeedback)
+    }
+    
+    private func buttonBackground(isCorrect: Bool, isWrong: Bool) -> Color {
+        if showFeedback && isCorrect {
+            return Color.green
+        } else if showFeedback && isWrong {
+            return Color.red
+        } else {
+            return AppTheme.Colors.surface
+        }
+    }
+    
+    private func buttonShadow(isCorrect: Bool, isWrong: Bool) -> Color {
+        if showFeedback && isCorrect {
+            return Color.green.opacity(0.4)
+        } else if showFeedback && isWrong {
+            return Color.red.opacity(0.4)
+        } else {
+            return Color.black.opacity(0.1)
+        }
     }
     
     // MARK: - Actions

@@ -122,13 +122,13 @@ class GameManager: ObservableObject {
         currentQuestion = sortedByDifficulty[challengeIndex]
     }
     
-    private func generateOptions(for question: MultiplicationQuestion) {
+    func generateOptions(for question: MultiplicationQuestion) {
         var options = Set<Int>()
         options.insert(question.answer)
         
         let range = max(10, Int(question.answer / 2))
         
-        while options.count < 3 {
+        while options.count < 4 {
             let offset = Int.random(in: 1...range)
             let wrongAnswer = Bool.random() ? question.answer + offset : max(1, question.answer - offset)
             if wrongAnswer != question.answer {
