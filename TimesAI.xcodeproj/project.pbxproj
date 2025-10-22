@@ -17,7 +17,6 @@
 		8F5027142C179E5100832ADA /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8F5027132C179E5100832ADA /* Preview Assets.xcassets */; };
 		8F50271D2C179E9400832ADA /* StruggleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F50271C2C179E9400832ADA /* StruggleView.swift */; };
 		8F50271F2C179EA600832ADA /* StatisticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F50271E2C179EA600832ADA /* StatisticsView.swift */; };
-		8FCAFFC32C48E31A009958E6 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8FCAFFC22C48E31A009958E6 /* Launch Screen.storyboard */; };
 		8F9001012D00000100000002 /* GameManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F9001002D00000100000001 /* GameManager.swift */; };
 		8F9002012D00000100000002 /* QuestionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F9002002D00000100000001 /* QuestionModel.swift */; };
 		8F9002112D00000100000002 /* UserProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F9002102D00000100000001 /* UserProgress.swift */; };
@@ -30,6 +29,7 @@
 		8F9004512D00000100000002 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F9004502D00000100000001 /* StatsView.swift */; };
 		8F9005012D00000100000002 /* WeakAreasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F9005002D00000100000001 /* WeakAreasView.swift */; };
 		8F9005112D00000100000002 /* TablePracticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F9005102D00000100000001 /* TablePracticeView.swift */; };
+		8FCAFFC32C48E31A009958E6 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8FCAFFC22C48E31A009958E6 /* Launch Screen.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,7 +44,6 @@
 		8F5027132C179E5100832ADA /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		8F50271C2C179E9400832ADA /* StruggleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StruggleView.swift; sourceTree = "<group>"; };
 		8F50271E2C179EA600832ADA /* StatisticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsView.swift; sourceTree = "<group>"; };
-		8FCAFFC22C48E31A009958E6 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		8F9001002D00000100000001 /* GameManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameManager.swift; sourceTree = "<group>"; };
 		8F9002002D00000100000001 /* QuestionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionModel.swift; sourceTree = "<group>"; };
 		8F9002102D00000100000001 /* UserProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProgress.swift; sourceTree = "<group>"; };
@@ -57,6 +56,7 @@
 		8F9004502D00000100000001 /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
 		8F9005002D00000100000001 /* WeakAreasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeakAreasView.swift; sourceTree = "<group>"; };
 		8F9005102D00000100000001 /* TablePracticeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TablePracticeView.swift; sourceTree = "<group>"; };
+		8FCAFFC22C48E31A009958E6 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -384,12 +384,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = NO;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = NO;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"TimesAI/Preview Content\"";
 				DEVELOPMENT_TEAM = 39G8PAC48C;
 				ENABLE_PREVIEWS = YES;
@@ -408,16 +408,17 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.21;
-				PRODUCT_BUNDLE_IDENTIFIER = ompatel.TimesAIApp;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ompatel.timesai;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -425,12 +426,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = NO;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = NO;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"TimesAI/Preview Content\"";
 				DEVELOPMENT_TEAM = 39G8PAC48C;
 				ENABLE_PREVIEWS = YES;
@@ -449,16 +450,17 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.21;
-				PRODUCT_BUNDLE_IDENTIFIER = ompatel.TimesAIApp;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ompatel.timesai;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
