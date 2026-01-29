@@ -316,7 +316,7 @@ struct LearningView: View {
         
         // Only update if the list has changed
         if newList.count != strugglingQuestions.count ||
-           newList.map { $0.id } != strugglingQuestions.map { $0.id } {
+            newList.map({ $0.id }) != strugglingQuestions.map({ $0.id }) {
             strugglingQuestions = newList
             
             // If we have questions and no current question, start one
